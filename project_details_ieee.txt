@@ -1,0 +1,81 @@
+IEEE Paper Structure: Real-Time Social Graph Analytics Pipeline
+====================================================================
+
+This document provides a comprehensive overview of the project, formatted to assist in writing an IEEE format research paper. 
+
+--------------------------------------------------------------------
+1. ABSTRACT
+--------------------------------------------------------------------
+In the era of big data, analyzing social networks in real-time is critical for identifying key influencers, trends, and network dynamics. This project presents an end-to-end streaming analytics system designed to ingest, process, and analyze social interactions in real-time. By leveraging Apache Kafka for high-throughput data ingestion and Apache Spark (Structured Streaming and GraphX) for distributed graph processing, the system dynamically computes PageRank algorithms on a continuously updating graph. A lightweight API layer bridges the distributed backend to a frontend dashboard, enabling real-time visualization of the most influential users in the network. The proposed architecture demonstrates high scalability, fault tolerance, and low-latency analytics.
+
+--------------------------------------------------------------------
+2. INTRODUCTION
+--------------------------------------------------------------------
+Social networks generate vast amounts of relational data continuously. Traditional batch processing methods are insufficient for applications requiring instantaneous insights, such as real-time marketing, fraud detection, and trend analysis. 
+This project aims to build a robust pipeline that treats streaming data as a constantly evolving graph. The primary objective is to identify the top influential nodes (users) within the network as new edges (interactions) arrive. 
+
+Key objectives include:
+- Establishing a reliable streaming ingestion pipeline.
+- Transforming continuous relational data into a graph topology.
+- Executing graph algorithms (e.g., PageRank, In-Degree computation) on streaming micro-batches.
+- Serving the analytics to a real-time monitoring dashboard.
+
+--------------------------------------------------------------------
+3. SYSTEM ARCHITECTURE
+--------------------------------------------------------------------
+The system follows a microservices-inspired data pipeline architecture composed of four primary layers:
+
+A. Data Ingestion Layer (Apache Kafka)
+- Acts as the central nervous system. 
+- A producer service generates continuous streams of social interaction events (source user, target user, interaction type, timestamp).
+- Events are published to a distributed Kafka topic (`social_interactions`).
+
+B. Stream Processing & Analytics Layer (Apache Spark)
+- Spark Structured Streaming subscribes to the Kafka topic.
+- Micro-batches of interactions are extracted and parsed.
+- Spark GraphX constructs a directed property graph from the accumulated edges.
+- Graph analytics algorithms (specifically PageRank) are executed to assign an influence score to each vertex (user).
+
+C. API Servicing Layer (Python backend)
+- A lightweight HTTP API server bridges the gap between the heavy distributed processing layer and the client.
+- It constantly monitors the output of the Spark application (JSON files) and serves it over a REST endpoint (`/api/results`), handling CORS and client requests asynchronously.
+
+D. Presentation Layer (Frontend Dashboard)
+- A web interface built with HTML, CSS, and JavaScript.
+- It polls the API layer and dynamically visualizes the top influencers, network size, and batch statistics in real-time.
+
+--------------------------------------------------------------------
+4. METHODOLOGY & IMPLEMENTATION
+--------------------------------------------------------------------
+A. Graph Modeling:
+Nodes represent Users, and Edges represent Interactions (e.g., likes, follows, retweets). The system accumulates streaming edges into a unified memory space. A directed graph is created dynamically using `Graph.fromEdges` via Spark GraphX.
+
+B. PageRank Execution:
+The PageRank algorithm is executed with a defined tolerance (e.g., 0.0001) iteratively across the graph. This determines the probability of a random surfer arriving at any specific user node. The output is joined with the `inDegree` metrics of the nodes to validate influence.
+
+C. Pipeline Orchestration:
+A shell script (`run_pipeline.sh`) is utilized to automate the environment setup and orchestration. It automatically provisions JDK, Kafka, and SBT, launches Zookeeper and Kafka servers, compiles the Scala code, starts the Python API server, and finally boots up the Spark analytics application and the interaction producer simultaneously.
+
+--------------------------------------------------------------------
+5. TECHNOLOGIES USED
+--------------------------------------------------------------------
+- Apache Kafka (v3.6.1) & Zookeeper: High-throughput, distributed message broker for data streaming.
+- Apache Spark (v3.4.1): Distributed data processing engine.
+  - Spark Structured Streaming: For handling streaming dataframes from Kafka.
+  - Spark GraphX: For building graphs and running distributed graph algorithms like PageRank.
+- Scala (v2.12.18): Primary programming language for the Spark ecosystem, compiled via SBT (Scala Build Tool).
+- Python 3: For creating a lightweight HTTP REST server (`http.server`).
+- HTML/CSS/JavaScript: For the frontend monitoring dashboard.
+
+--------------------------------------------------------------------
+6. RESULTS & DISCUSSION
+--------------------------------------------------------------------
+(In your IEEE paper, you can elaborate on these points based on your execution)
+- The pipeline successfully handles continuous streams of data, processing micro-batches with low latency.
+- The PageRank algorithm quickly converges on the top influencers as the graph size grows.
+- The separation of concerns (Kafka for ingestion, Spark for compute, Python for API serving) ensures that the frontend remains responsive regardless of the load on the Spark cluster.
+
+--------------------------------------------------------------------
+7. CONCLUSION
+--------------------------------------------------------------------
+This project successfully demonstrates a scalable approach to real-time social graph analytics. By combining the streaming capabilities of Kafka with the distributed graph processing power of Spark GraphX, the system can continuously track and compute the influence of users within a dynamically evolving network. Future work could involve moving the state management to distributed databases (like Cassandra or Neo4j) for fault tolerance over massive, persistent graph datasets.

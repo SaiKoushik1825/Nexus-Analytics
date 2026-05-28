@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Analytics | Live Dashboard</title>
+    <meta name="description" content="View live real-time graph analytics and top influencers.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard-body">
+    <nav class="glass-nav">
+        <div class="nav-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>Nexus Analytics</span>
+        </div>
+        <div class="nav-profile">
+            <span class="status-indicator live">Live</span>
+            <span id="userGreeting" class="greeting">Welcome</span>
+            <button id="logoutBtn" class="btn-secondary">Logout</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h2>Real-Time Influence Graph</h2>
+            <p>Live PageRank calculation via Spark GraphX</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card glass-panel">
+                <h3>Total Processed Edges</h3>
+                <div class="stat-value" id="totalEdges">0</div>
+                <div class="stat-trend positive">↑ 12% this minute</div>
+            </div>
+            <div class="stat-card glass-panel">
+                <h3>Active Vertices</h3>
+                <div class="stat-value" id="activeVertices">0</div>
+                <div class="stat-trend positive">↑ 4% this minute</div>
+            </div>
+            <div class="stat-card glass-panel">
+                <h3>Current Batch Speed</h3>
+                <div class="stat-value" id="batchSpeed">0 ms/batch</div>
+                <div class="stat-trend neutral">Stable</div>
+            </div>
+        </div>
+
+        <section class="influencers-section glass-panel">
+            <div class="section-header">
+                <h3>Top 10 Global Influencers</h3>
+                <div class="pulse-ring"></div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User ID</th>
+                            <th>PageRank Score</th>
+                            <th>In-Degree (Interactions Received)</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody id="influencersTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Init Dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Java / SBT
+target/
+project/target/
+.metals/
+.bloop/
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# JDK
+jdk/
+
+# Kafka
+kafka/
+
+# OS
+.DS_Store
+Thumbs.db
